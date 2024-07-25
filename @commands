@@ -1,0 +1,60 @@
+-- Comando para criação do projeto, o . significa que será no mesmo diretório:
+> django-admin startproject app .
+
+-- Comando para executar o projeto:
+> python .\manage.py runserver
+
+-- Comadno para criar os apps do projetos (os apps são pastas que agrupam operações relacionadas a uma entidade específica.)
+> python .\manage.py startapp cars
+
+## Para criar "habilitar" um app, precisamos ir no arquivo "app.settings.py" e adicionar a app nova no item: INSTALLED_APPS
+
+
+#### DATABASE COMMANDS
+
+-- Comando para criar os arquivos de inicialização padrãos do banco de dados da aplicação:
+> python .\manage.py makemigrations
+
+-- Comando para executar os arquivos criados pelo makemigrations:
+> python .\manage.py migrate
+
+
+### Auth comands
+-- Comando para criar um superUser:
+> python .\manage.py createsuperuser 
+
+
+## Alterar a senha de um operador:
+-- Execute o comando abaixo
+python manage.py shell
+
+-- Em seguida execute os comandos na ordem abaixo:
+from django.contrib.auth.models import User
+admin_user = User.objects.get(username='admin')
+admin_user.set_password('admin')
+admin_user.save()
+exit()
+
+
+## Gerar arquivo de dependências do projeto
+-- Criar o arquivo requirements:
+pip freeze > requirements.txt
+
+-- Instalar as dependencias:
+pip install -r .\requirements.txt
+
+
+
+### PostgreSQL commands:
+-- Entrar no shell do PostreSQL:
+psql -U postgres
+
+-- Listar todos os bancos de dados no PSQL
+\l
+
+-- Criar um banco de dados:
+CREATE DATABASE [nome_da_tabela];
+EX: CREATE DATABASE carros;
+
+-- Sair do shell:
+\q

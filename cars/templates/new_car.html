@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %} <!-- Esta tag é utilizada para criar uma proteção padrão do Django contra alguns tipos de ataque -->
+        
+        <table>
+            {{ form.as_table }}
+            
+        </table>
+        <input type="submit" value="Cadastrar" class="btn btn-primary">
+        
+    </form>
+{% endblock %}
