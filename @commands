@@ -13,10 +13,12 @@
 #### DATABASE COMMANDS
 
 -- Comando para criar os arquivos de inicialização padrãos do banco de dados da aplicação:
-> python .\manage.py makemigrations
+> [Windows] python .\manage.py makemigrations
+> [Ubunto] python3 manage.py makemigrations
 
 -- Comando para executar os arquivos criados pelo makemigrations:
-> python .\manage.py migrate
+> [Windows] python .\manage.py migrate
+> [Ubunto] python3 manage.py migrate
 
 
 ### Auth comands
@@ -58,3 +60,56 @@ EX: CREATE DATABASE carros;
 
 -- Sair do shell:
 \q
+
+### Servidor Ubunto AWS:
+> Após iniciar o servidor Ubunto no AWS, alguns passos são necessários:
+-- sudo apt update
+-- sudo apt upgrade
+
+> Configuração do Github no servidor:
+-- Comandos para gerar chave SSH no servidor e adicionar chave no agente SSH:
+ssh-keygen -t ed25519 -C "rphspires@email.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+-- Comando para ler conteúdo da sua chave gerada:
+cat ~/.ssh/id_ed25519.pub
+
+-- No GitHub é necessario autorizar a conexão utilizando a chave recem criada.
+Copiar o conteúdo completo do arquivo ssh do comando anterior, ir no GitHub em: 
+    Settings > SSH and GPG Keys > clicar em "New SSH key"
+
+-- Comando para testar autenticação:
+ssh -T git@github.com
+
+-- Clonar o repositório para a pasta padrão do Ubunto:
+/home/ubunto
+obs: utilizar link SSH para fazer o clone.
+git clone "utl do repositório"
+
+-- Instalação do PostgreSQL
+sudo apt install postgresql postgresql-contrib
+
+-- Comando para acessar o Postgres Shell:
+sudo -u postgres psql
+
+-- Comando para alterar senha do usuário postgres:
+\password postgres
+
+> Preparar o Python:
+-- Comandos para instalar dependências e ferramentas do Python:
+sudo apt install build-essential python3
+sudo apt install python3-dev
+sudo apt install python3-venv
+sudo apt install python3-pip
+
+> Ativar a venv:
+source venv-cars/bin/activate
+
+> In
+-- Comandos git - commit e push:
+git commit -am "mensagem"
+git push origin master
+
+-- Comando git - pull:
+git pull
