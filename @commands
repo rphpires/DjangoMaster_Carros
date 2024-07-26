@@ -7,7 +7,7 @@
 -- Comadno para criar os apps do projetos (os apps são pastas que agrupam operações relacionadas a uma entidade específica.)
 > python .\manage.py startapp cars
 
-## Para criar "habilitar" um app, precisamos ir no arquivo "app.settings.py" e adicionar a app nova no item: INSTALLED_APPS
+### Para criar "habilitar" um app, precisamos ir no arquivo "app.settings.py" e adicionar a app nova no item: INSTALLED_APPS
 
 
 #### DATABASE COMMANDS
@@ -26,7 +26,7 @@
 > python .\manage.py createsuperuser 
 
 
-## Alterar a senha de um operador:
+### Alterar a senha de um operador:
 -- Execute o comando abaixo
 python manage.py shell
 
@@ -38,7 +38,7 @@ admin_user.save()
 exit()
 
 
-## Gerar arquivo de dependências do projeto
+### Gerar arquivo de dependências do projeto
 -- Criar o arquivo requirements:
 pip freeze > requirements.txt
 
@@ -62,9 +62,13 @@ EX: CREATE DATABASE carros;
 \q
 
 ### Servidor Ubunto AWS:
+> O recomando é realizar todas as instalações com o usuário root
+-- Comando para trocar o usuário:
+sudo su
+
 > Após iniciar o servidor Ubunto no AWS, alguns passos são necessários:
--- sudo apt update
--- sudo apt upgrade
+sudo apt update
+sudo apt upgrade
 
 > Configuração do Github no servidor:
 -- Comandos para gerar chave SSH no servidor e adicionar chave no agente SSH:
@@ -106,10 +110,87 @@ sudo apt install python3-pip
 > Ativar a venv:
 source venv-cars/bin/activate
 
-> In
--- Comandos git - commit e push:
-git commit -am "mensagem"
-git push origin master
 
--- Comando git - pull:
-git pull
+### Alterando o servidor para rodar em Produção no Ubunto
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+-- Antes de seguir, precisamos reinstalar toda aplicação em um diretório diferente:
+-- Comando para apagar os diretórios:
+
+sudo rm -Rf DjangoMaster_Carros/
+
+* Para realizar estas configurações precisamos estar logados com o usuário: root
+
+-- Comando para trocar o usuário:
+
+sudo su
+
+-- Fazer a instalação no diretório: /var/www
+-- ir para o diretório: var
+cd /var
+
+-- Criar o diretório www se ele não existir:
+mkdir www
+
+> uWSGI (Web Server Gateway Interface) 
+Este é o Gateway que faz a interface entre do WebServer do Servidor com o Python.
+
+-- Instalção do módulo
+pip install uwsgi
+
+-- Inicializar o WSGI:
+uwsgi --http :8000 --module {project_name.wsgi} --chmod-socket=666
+
+EX: uwsgi --http :8000 --module app.wsgi --chmod-socket=666
+--module app.wsgi: Inicia o arquivo wsgi.py do nosso projeto
+--chmod-socket=666: Habilita algumas permissões necessárias, o '666' é um tipo de permissão.
+
+> NGINX (WebServer)
+NGINX é um servidor web que também funciona como proxy de email, proxy reverso, e balanceador de carga
+
+-- Comando para instalação
+sudo apt install nginx
+
+-- Configurar o arquivo de configuração do nosso projeto dentro do NGINX
+- Aqui apontamos o nginx para o uWSGI
+
+-- Ir para o diretório:
+cd /etc/nginx/sites-available/
+
+-- Criar o arquivo de configuração:
+sudo nano carros.conf
+
+Conteúdo do arquivo de configuração:
+"""
+upstream django {
+    server unix:///var/www/DjangoMaster_Carros/carros.sock;
+    # server 127.0.0.1:8001;
+}
+
+server {
+    listen      8000;
+    server_name 52.67.123.82;
+    charset     utf-8;
+
+    client_max_body_size 75M;
+
+    location /media  {
+        alias /var/www/DjangoMaster_Carros/media;
+    }
+
+    location /static {
+        alias /var/www/DjangoMaster_Carros/static;
+    }
+
+    location / {
+        uwsgi_pass  django;
+        include     /var/www/DjangoMaster_Carros/uwsgi_params;
+    }
+}
+"""
+
+-- Criar o arquivo de configuração do uwsgi
+
